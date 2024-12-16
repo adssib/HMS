@@ -1,0 +1,102 @@
+@startuml
+!define TABLE(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define PRIMARY_KEY(x) <u>x</u>
+!define FOREIGN_KEY(x) <i>x</i>
+
+TABLE(Hotel, "Hotel") {
+  PRIMARY_KEY(hotel_id)
+  name
+  address
+}
+
+TABLE(Room, "Room") {
+  PRIMARY_KEY(room_id)
+  FOREIGN_KEY(hotel_id)
+  FOREIGN_KEY(room_type_id)
+  room_number
+  floor
+  status
+}
+
+TABLE(RoomType, "RoomType") {
+  PRIMARY_KEY(room_type_id)
+  type_name
+  description
+  base_price
+}
+
+TABLE(Guest, "Guest") {
+  PRIMARY_KEY(guest_id)
+  first_name
+  last_name
+  email
+  password_hash
+  password_salt
+  phone
+}
+
+TABLE(Booking, "Booking") {
+  PRIMARY_KEY(booking_id)
+  FOREIGN_KEY(room_id)
+  FOREIGN_KEY(guest_id)
+  FOREIGN_KEY(employee_id)
+  check_in_date
+  check_out_date
+  total_price
+  status
+}
+
+TABLE(Employee, "Employee") {
+  PRIMARY_KEY(employee_id)
+  FOREIGN_KEY(department_id)
+  first_name
+  last_name
+  email
+  password_hash
+  password_salt
+  position
+  hire_date
+  is_admin
+}
+
+TABLE(Admin, "Admin") {
+  PRIMARY_KEY(admin_id)
+  FOREIGN_KEY(employee_id)
+  username
+  password_hash
+  password_salt
+}
+
+TABLE(Department, "Department") {
+  PRIMARY_KEY(department_id)
+  name
+  description
+}
+
+TABLE(Invoice, "Invoice") {
+  PRIMARY_KEY(invoice_id)
+  FOREIGN_KEY(booking_id)
+  issue_date
+  total_amount
+}
+
+TABLE(Payment, "Payment") {
+  PRIMARY_KEY(payment_id)
+  FOREIGN_KEY(invoice_id)
+  amount
+  payment_date
+  payment_method
+}
+
+Hotel "1" -- "many" Room : has
+Room "many" -- "1" RoomType : is of
+Booking "many" -- "1" Room : reserves
+Booking "many" -- "1" Guest : made by
+Employee "many" -- "1" Department : belongs to
+Employee "1" -- "many" Booking : manages
+Service "many" -- "many" Booking : provided for
+Invoice "1" -- "1" Booking : generated for
+Payment "many" -- "1" Invoice : made for
+Admin "1" -- "1" Employee : is an
+
+@enduml
